@@ -27,6 +27,17 @@ def show_all_student():
     all_students = list(collection.find())
     return jsonify(all_students)
 
+@app.route("/students/<int:stu_id>",methods =["GET"])
+@basic_auth.required
+def show_student_id(stu_id):
+    db = client["students"]
+    collection = db["std_info"]
+    all_students = list(collection.find())
+    stu = next((s for s in all_students if s["_id"] == stu_id), None)
+    if(stu):
+        return jsonify(stu)
+    else:
+        return jsonify({"erro":"Student not found"}),404
 
 if __name__=="__main__":
     app.run(host="0.0.0.0",port=5000,debug=True)
