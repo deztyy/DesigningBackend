@@ -38,6 +38,26 @@ def show_student_id(stu_id):
         return jsonify(stu)
     else:
         return jsonify({"erro":"Student not found"}),404
+    
+@app.route("/students",methods =["POST"])
+@basic_auth.required
+def add_new_student():
+    db = client["students"]
+    collection = db["std_info"]
+    all_students = list(collection.find())
+    data = request.get_json()
+    new_student = {
+        "_id" : data["_id"],
+        "fullname" : data["fullname"],
+        "gpa" : data["gpa"],
+        "major" : data["major"]
+    }
+    stu = next((s for s in all_students if s["_id"] == data["_id"]), None)
+    if(stu):
+        return jsonify({"error":"Cannot create new student"}), 500
+    else:
+        collection.insert_one(new_student)
+        return jsonify(new_student), 200
 
 if __name__=="__main__":
     app.run(host="0.0.0.0",port=5000,debug=True)
