@@ -59,5 +59,21 @@ def add_new_student():
         collection.insert_one(new_student)
         return jsonify(new_student), 200
 
+@app.route("/students/<int:stu_id>",methods =["PUT"])
+@basic_auth.required
+def update_student(stu_id):
+    db = client["students"]
+    collection = db["std_info"]
+    all_students = list(collection.find())
+    data = request.get_json()
+    stu = next((s for s in all_students if s["_id"] == stu_id), None)
+    if(stu):
+        collection.update_one({"_id":stu_id},{"$set":{"fullname" : data["fullname"]}})
+        collection.update_one({"_id":stu_id},{"$set":{"gpa" : data["gpa"]}})
+        collection.update_one({"_id":stu_id},{"$set":{"major" : data["major"]}})
+        return jsonify(data), 200
+    else:
+        return jsonify({"error":"Student not found"}), 404
+
 if __name__=="__main__":
     app.run(host="0.0.0.0",port=5000,debug=True)
