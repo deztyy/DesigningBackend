@@ -19,6 +19,13 @@ except Exception as e:
 def Greet():
     return "<p>Welcome to Student Management API</p>"
 
+@app.route("/students",methods =["GET"])
+@basic_auth.required
+def show_all_student():
+    db = client["students"]
+    collection = db["std_info"]
+    all_students = list(collection.find())
+    return jsonify(all_students)
 
 
 if __name__=="__main__":
