@@ -1,10 +1,11 @@
 from flask import jsonify,Flask,request
 from pymongo.mongo_client import MongoClient
-
+from flask_basicauth import BasicAuth 
 
 uri = "mongodb+srv://12345:12345@cluster0.h3roqpp.mongodb.net/?retryWrites=true&w=majority"
 app = Flask(__name__)
-
+app.config['BASIC_AUTH_USERNAME'] = 'name'
+app.config['BASIC_AUTH_PASSWORD'] = 'pass'
 basic_auth = BasicAuth(app)
 
 try:
